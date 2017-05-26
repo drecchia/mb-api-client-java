@@ -11,7 +11,7 @@ package net.mercadobitcoin.common.exception;
  */
 public class MercadoBitcoinException extends Exception {
 
-	private static final long serialVersionUID = 3299761335363609520L;
+	private static final long serialVersionUID = 2121820371459560136L;
 
 	public MercadoBitcoinException(String message) {
 		super(message);

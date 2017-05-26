@@ -13,7 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import net.mercadobitcoin.common.exception.MercadoBitcoinException;
+import net.mercadobitcoin.common.exception.MercadoBitcoinInternalException;
 import net.mercadobitcoin.common.security.HostnameVerifierBag;
 import net.mercadobitcoin.common.security.TrustManagerBag;
 import net.mercadobitcoin.common.security.TrustManagerBag.SslContextTrustManager;
@@ -26,7 +26,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public abstract class AbstractApiService {
 
 	private static final String DOMAIN = "https://www.mercadobitcoin.net";
-	
+
 	protected enum HttpMethod {
 		GET,
 		POST
@@ -35,32 +35,32 @@ public abstract class AbstractApiService {
 	protected final boolean usingHttps() {
 		return DOMAIN.toUpperCase().startsWith("HTTPS");
 	}
-	
+
 	/**
 	 * Starts a SSL connection for HTTPS Requests
-	 * @throws MercadoBitcoinException Generic exception to point any error with the execution.
+	 * @throws MercadoBitcoinInternalException Generic exception to point any error with the execution.
 	 */
-	public AbstractApiService() throws MercadoBitcoinException {
+	public AbstractApiService() {
 		try {
 			if (usingHttps()) {
 				setSslContext(SslContextTrustManager.DEFAULT);
 			}
 		} catch (KeyManagementException e) {
-			throw new MercadoBitcoinException("Internal error: Invalid SSL Connection.");
+			throw new MercadoBitcoinInternalException("Internal error: Invalid SSL Connection.");
 		} catch (NoSuchAlgorithmException e) {
-			throw new MercadoBitcoinException("Internal error: Invalid SSL Algorithm.");
+			throw new MercadoBitcoinInternalException("Internal error: Invalid SSL Algorithm.");
 		}
 	}
-	
+
 	protected String getDomain() {
 		return DOMAIN + getApiPath();
 	}
-	
+
 	public abstract String getApiPath();
-	
+
 	/**
 	 * Setup SSL Context to perform HTTPS communication.
-	 * 
+	 *
 	 * @param sctm Selected way to validate certificates
 	 */
 	private final void setSslContext(SslContextTrustManager sctm)
@@ -83,7 +83,7 @@ public abstract class AbstractApiService {
 				throw new NotImplementedException();
 		}
 	}
-	
+
 	protected static final String encodeHexString(byte[] bytes) {
 		StringBuffer hexString = new StringBuffer();
 		for (int i = 0; i < bytes.length; i++) {
@@ -100,5 +100,5 @@ public abstract class AbstractApiService {
 		long unixTime = System.currentTimeMillis() / 1000L;
 		return unixTime;
 	}
-	
+
 }
